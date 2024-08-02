@@ -14,7 +14,7 @@ class RoarPyCameraSensorData(RoarPyRemoteSupportedSensorData):
     Returns the image as a numpy array.
 
     """
-    def get_image(self) -> Image:
+    def get_image(self) -> Image.Image:
         raise NotImplementedError()
     
     def to_gym(self) -> typing.Any:
@@ -40,7 +40,7 @@ class RoarPyCameraSensorDataRGB(RoarPyCameraSensorData):
     # RGB image W*H*3, each r/g/b value in range [0,255]
     image_rgb: np.ndarray #np.NDArray[np.uint8]
 
-    def get_image(self) -> Image:
+    def get_image(self) -> Image.Image:
         return Image.fromarray(self.image_rgb,mode="RGB")
 
     def to_gym(self) -> np.ndarray:
@@ -54,7 +54,7 @@ class RoarPyCameraSensorDataRGB(RoarPyCameraSensorData):
         return gym.spaces.Box(low=0, high=255, shape=(height, width, 3), dtype=np.uint8)
 
     @staticmethod
-    def from_image(image: Image):
+    def from_image(image: Image.Image):
         return __class__(
             np.asarray(image.convert("RGB"), dtype=np.uint8)
         )
@@ -79,7 +79,7 @@ class RoarPyCameraSensorDataGreyscale(RoarPyCameraSensorData):
     # Greyscale image W*H*1, each pixel in range[0,255]
     image_greyscale: np.ndarray #np.NDArray[np.uint8]
 
-    def get_image(self) -> Image:
+    def get_image(self) -> Image.Image:
         return Image.fromarray(self.image_greyscale,mode="L")
     
     def to_gym(self) -> np.ndarray:
@@ -93,7 +93,7 @@ class RoarPyCameraSensorDataGreyscale(RoarPyCameraSensorData):
         return gym.spaces.Box(low=0, high=255, shape=(height, width, 1), dtype=np.uint8)
 
     @staticmethod
-    def from_image(image: Image):
+    def from_image(image: Image.Image):
         return __class__(
             np.asarray(image.convert("L"),dtype=np.uint8)
         )
@@ -118,7 +118,7 @@ class RoarPyCameraSensorDataDepth(RoarPyCameraSensorData):
     image_depth: np.ndarray #np.NDArray[np.float32]
     is_log_scale: bool
 
-    def get_image(self) -> Image:
+    def get_image(self) -> Image.Image:
         # we have to normalize this to [0,1]
         # we should rarely call this function
         min, max = np.min(self.image_depth), np.max(self.image_depth)
@@ -146,7 +146,7 @@ class RoarPyCameraSensorDataSemanticSegmentation(RoarPyCameraSensorData):
     # Dictionary mapping each pixel in SS Frame to a RGB array of color and a label
     ss_label_color_map: typing.Dict[int,typing.Tuple[np.ndarray, str]] #typing.Dict[int,typing.Tuple[np.NDArray[np.uint8], str]]
 
-    def get_image(self) -> Image:
+    def get_image(self) -> Image.Image:
         # we have to normalize this to [0,1]
         # we should rarely call this function
         image_RGB = np.zeros(shape=(*self.image_ss.shape[:-1],3),dtype=np.uint8)

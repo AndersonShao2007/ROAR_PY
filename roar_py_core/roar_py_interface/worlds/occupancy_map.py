@@ -88,7 +88,7 @@ class RoarPyOccupancyMapProducer:
     def height(self, value : int):
         self.image = self.image.resize((self.width, value))
 
-    def plot_occupancy_map(self, location_2d : np.ndarray, rotation_yaw : float) -> Image:
+    def plot_occupancy_map(self, location_2d : np.ndarray, rotation_yaw : float) -> Image.Image:
         """
         Generates an occupancy map around a specific location.
 
